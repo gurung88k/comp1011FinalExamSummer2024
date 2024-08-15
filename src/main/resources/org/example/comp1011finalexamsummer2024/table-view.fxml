@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.comp1011finalexamsummer2024.TableViewController">
    <children>
       <VBox alignment="CENTER" layoutX="22.0" layoutY="31.0" prefHeight="400.0" prefWidth="1000.0" spacing="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -22,13 +22,13 @@
                   <VBox>
                      <children>
                         <TableView fx:id="tableView" prefHeight="323.0" prefWidth="600.0">
-                          <columns>
-                            <TableColumn fx:id="idColumn" prefWidth="61.0" text="ID" />
-                            <TableColumn fx:id="firstNameColumn" prefWidth="130.0" text="First Name" />
+                           <columns>
+                              <TableColumn fx:id="idColumn" prefWidth="61.0" text="ID" />
+                              <TableColumn fx:id="firstNameColumn" prefWidth="130.0" text="First Name" />
                               <TableColumn fx:id="lastNameColumn" prefWidth="130.0" text="Last Name" />
                               <TableColumn fx:id="phoneColumn" prefWidth="130.0" text="Phone" />
                               <TableColumn fx:id="totalPurchaseColumn" prefWidth="120.0" text="Total Purchases" />
-                          </columns>
+                           </columns>
                         </TableView>
                         <Label fx:id="rowsInTableLabel" text="Rows in table: " />
                      </children>
