@@ -12,10 +12,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-
 public class TableViewController {
     @FXML
     private Label saleLabel;
@@ -52,7 +48,7 @@ public class TableViewController {
 
     @FXML
     private ImageView imageView;
-    
+
 
     @FXML
     private void top10Customers()
@@ -71,7 +67,11 @@ public class TableViewController {
     {
         System.out.println("called method loadAllCustomers");
     }
-    // Method to initialize the TableView
+    @FXML
+    private Label totalPurchaseLabel;  // Label to display total purchases
+
+
+
     @FXML
     public void initialize() {
         // Set up the columns with the corresponding getter methods from Customer class
@@ -85,17 +85,53 @@ public class TableViewController {
         ObservableList<Customer> customers = loadCustomerData();
         tableView.setItems(customers);
 
-        // Update the rowsInTableLabel dynamically
-        updateRowCountLabel();
-
-        // Add a listener to update the label if the table's items change
-        tableView.getItems().addListener((ObservableList<Customer> change) -> updateRowCountLabel());
+        // Add listener to the TableView to detect when a customer is selected
+        tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                updatePurchaseList(newValue);  // Update ListView when a customer is selected
+                updatePriceLabels(newValue);   // Update the price labels (msrpLabel, saleLabel, savingsLabel)
+            }
+        });
     }
 
-    // Method to update the label with the number of rows in the table
-    private void updateRowCountLabel() {
-        int rowCount = tableView.getItems().size(); // Get the number of rows in the table
-        rowsInTableLabel.setText("Rows in table: " + rowCount);
+    // Method to update the ListView with the selected customer's purchases
+    private void updatePurchaseList(Customer customer) {
+        ObservableList<String> purchaseItems = FXCollections.observableArrayList();
+
+        // Loop through customer's purchased products and add to list
+        for (Product product : customer.getPurchasedProducts()) {
+            purchaseItems.add(product.getName() + " - $" + String.format("%.2f", product.getSalePrice()));
+        }
+
+        // If there are no products, add a fake product
+        if (purchaseItems.isEmpty()) {
+            purchaseItems.add("Sample Product - $0.00");
+        }
+
+        purchaseListView.setItems(purchaseItems);  // Update the ListView
+
+        // Optionally, display the total purchase amount for the customer
+        totalPurchaseLabel.setText("Total purchase: " + customer.getTotalPurchases());
+    }
+
+    // Method to update the msrpLabel, saleLabel, and savingsLabel
+    private void updatePriceLabels(Customer customer) {
+        double totalRegularPrice = 0.0;
+        double totalSalePrice = 0.0;
+
+        // Calculate total regular price and sale price
+        for (Product product : customer.getPurchasedProducts()) {
+            totalRegularPrice += product.getRegularPrice();
+            totalSalePrice += product.getSalePrice();
+        }
+
+        // Calculate savings
+        double totalSavings = totalRegularPrice - totalSalePrice;
+
+        // Update the labels with the calculated values
+        msrpLabel.setText(String.format("Total regular price: $%.2f", totalRegularPrice));
+        saleLabel.setText(String.format("Total sale price: $%.2f", totalSalePrice));
+        savingsLabel.setText(String.format("Total savings: $%.2f", totalSavings));
     }
 
     // Dummy method to simulate loading data
