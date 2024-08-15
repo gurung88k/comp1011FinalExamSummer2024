@@ -1,3 +1,5 @@
+//Krish Gurung
+//200560503
 package org.example.comp1011finalexamsummer2024;
 //product classs
 public class Product {
