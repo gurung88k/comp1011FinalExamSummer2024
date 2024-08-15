@@ -10,9 +10,11 @@ import java.io.IOException;
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
+        // Load the correct FXML file (table-view.fxml)
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("table-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
 
+        stage.setTitle("Table View Example");
         stage.setScene(scene);
         stage.show();
     }

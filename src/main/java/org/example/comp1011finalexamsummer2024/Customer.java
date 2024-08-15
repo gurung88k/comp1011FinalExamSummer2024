@@ -1,14 +1,14 @@
 package org.example.comp1011finalexamsummer2024;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Customer {
-
-    private int id;                   // Customer ID
-    private String firstName;          // Customer first name
-    private String lastName;           // Customer last name
-    private String phone;              // Customer phone number
-    private final ArrayList<String> purchasedProducts;  // List to store purchased products
+    private int id;
+    private String firstName;
+    private String lastName;
+    private String phone;
+    private List<Product> purchasedProducts;
 
     // Constructor
     public Customer(int id, String firstName, String lastName, String phone) {
@@ -16,7 +16,31 @@ public class Customer {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
-        this.purchasedProducts = new ArrayList<>();  // Initialize empty product list
+        this.purchasedProducts = new ArrayList<>();
+    }
+
+    // Method to add a purchased product to the customer's list
+    public void addPurchasedProduct(Product product) {
+        this.purchasedProducts.add(product);
+    }
+
+    // 4.1 Method to calculate total purchases using streams
+    public double getTotalPurchases() {
+        return purchasedProducts.stream()
+                .mapToDouble(Product::getSalePrice)
+                .sum();
+    }
+
+    // 4.2 Method to calculate total savings using streams
+    public double getTotalSavings() {
+        return purchasedProducts.stream()
+                .mapToDouble(product -> product.getRegularPrice() - product.getSalePrice())
+                .sum();
+    }
+
+    // 4.3 Method to check if the customer saved $5 or more across all purchases
+    public boolean hasSavedFiveDollarsOrMore() {
+        return getTotalSavings() >= 5.0;
     }
 
     // Getters and setters
@@ -52,19 +76,18 @@ public class Customer {
         this.phone = phone;
     }
 
-    public ArrayList<String> getPurchasedProducts() {
+    public List<Product> getPurchasedProducts() {
         return purchasedProducts;
     }
 
-    // Method to add a product to the purchasedProducts list
-    public void addPurchasedProduct(String product) {
-        this.purchasedProducts.add(product);
+    public void setPurchasedProducts(List<Product> purchasedProducts) {
+        this.purchasedProducts = purchasedProducts;
+    }
+    // 4.3 Method to check if the customer saved $5 or more on all their purchases
+    public boolean hasSavedFiveDollarsOrMoreOnAll() {
+        return purchasedProducts.stream()
+                .allMatch(product -> (product.getRegularPrice() - product.getSalePrice()) >= 5.0);
     }
 
-    // toString method for displaying customer details
-    @Override
-    public String toString() {
-        return "Customer ID: " + id + ", Name: " + firstName + " " + lastName +
-                ", Phone: " + phone + ", Purchased Products: " + purchasedProducts;
-    }
 }
+
