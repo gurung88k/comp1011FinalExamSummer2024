@@ -70,6 +70,12 @@ public class TableViewController {
     @FXML
     private Label totalPurchaseLabel;  // Label to display total purchases
 
+
+    @FXML
+    private Label rowsInTableLabel;  // Label to show rows in table
+
+    private ObservableList<Customer> allCustomers;  // Store all customers
+
     @FXML
     public void initialize() {
         // Set up the columns with the corresponding getter methods from Customer class
@@ -87,27 +93,18 @@ public class TableViewController {
         updateRowCountLabel(allCustomers.size());
     }
 
-    // Method to filter customers who saved $5.00 or more
+    // Method to load all customers into the TableView
     @FXML
-    public void customersSavedOver5() {
+    public void loadAllCustomers() {
         try {
-            ObservableList<Customer> filteredCustomers = FXCollections.observableArrayList();
+            // Set the full list of customers back into the tableView
+            tableView.setItems(allCustomers);
 
-            // Filter customers
-            for (Customer customer : allCustomers) {
-                if (customer.hasSavedFiveDollarsOrMore()) {
-                    filteredCustomers.add(customer);
-                }
-            }
-
-            // Update the tableView with filtered customers
-            tableView.setItems(filteredCustomers);
-
-            // Update the row count label
-            updateRowCountLabel(filteredCustomers.size());
+            // Update the row count label to reflect all customers
+            updateRowCountLabel(allCustomers.size());
 
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace();  // Ensure no exceptions are triggered
         }
     }
 
