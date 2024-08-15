@@ -8,7 +8,7 @@ public class Customer {
     private String firstName;          // Customer first name
     private String lastName;           // Customer last name
     private String phone;              // Customer phone number
-    private ArrayList<String> purchasedProducts;  // List to store purchased products
+    private final ArrayList<String> purchasedProducts;  // List to store purchased products
 
     // Constructor
     public Customer(int id, String firstName, String lastName, String phone) {
