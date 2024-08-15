@@ -70,8 +70,6 @@ public class TableViewController {
     @FXML
     private Label totalPurchaseLabel;  // Label to display total purchases
 
-
-
     @FXML
     public void initialize() {
         // Set up the columns with the corresponding getter methods from Customer class
@@ -82,56 +80,40 @@ public class TableViewController {
         totalPurchaseColumn.setCellValueFactory(new PropertyValueFactory<>("totalPurchases"));
 
         // Load customer data
-        ObservableList<Customer> customers = loadCustomerData();
-        tableView.setItems(customers);
+        allCustomers = loadCustomerData();
+        tableView.setItems(allCustomers);
 
-        // Add listener to the TableView to detect when a customer is selected
-        tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                updatePurchaseList(newValue);  // Update ListView when a customer is selected
-                updatePriceLabels(newValue);   // Update the price labels (msrpLabel, saleLabel, savingsLabel)
+        // Update the rowsInTableLabel dynamically
+        updateRowCountLabel(allCustomers.size());
+    }
+
+    // Method to filter customers who saved $5.00 or more
+    @FXML
+    public void customersSavedOver5() {
+        try {
+            ObservableList<Customer> filteredCustomers = FXCollections.observableArrayList();
+
+            // Filter customers
+            for (Customer customer : allCustomers) {
+                if (customer.hasSavedFiveDollarsOrMore()) {
+                    filteredCustomers.add(customer);
+                }
             }
-        });
+
+            // Update the tableView with filtered customers
+            tableView.setItems(filteredCustomers);
+
+            // Update the row count label
+            updateRowCountLabel(filteredCustomers.size());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    // Method to update the ListView with the selected customer's purchases
-    private void updatePurchaseList(Customer customer) {
-        ObservableList<String> purchaseItems = FXCollections.observableArrayList();
-
-        // Loop through customer's purchased products and add to list
-        for (Product product : customer.getPurchasedProducts()) {
-            purchaseItems.add(product.getName() + " - $" + String.format("%.2f", product.getSalePrice()));
-        }
-
-        // If there are no products, add a fake product
-        if (purchaseItems.isEmpty()) {
-            purchaseItems.add("Sample Product - $0.00");
-        }
-
-        purchaseListView.setItems(purchaseItems);  // Update the ListView
-
-        // Optionally, display the total purchase amount for the customer
-        totalPurchaseLabel.setText("Total purchase: " + customer.getTotalPurchases());
-    }
-
-    // Method to update the msrpLabel, saleLabel, and savingsLabel
-    private void updatePriceLabels(Customer customer) {
-        double totalRegularPrice = 0.0;
-        double totalSalePrice = 0.0;
-
-        // Calculate total regular price and sale price
-        for (Product product : customer.getPurchasedProducts()) {
-            totalRegularPrice += product.getRegularPrice();
-            totalSalePrice += product.getSalePrice();
-        }
-
-        // Calculate savings
-        double totalSavings = totalRegularPrice - totalSalePrice;
-
-        // Update the labels with the calculated values
-        msrpLabel.setText(String.format("Total regular price: $%.2f", totalRegularPrice));
-        saleLabel.setText(String.format("Total sale price: $%.2f", totalSalePrice));
-        savingsLabel.setText(String.format("Total savings: $%.2f", totalSavings));
+    // Method to update the rowsInTableLabel
+    private void updateRowCountLabel(int rowCount) {
+        rowsInTableLabel.setText("Rows in table: " + rowCount);
     }
 
     // Dummy method to simulate loading data

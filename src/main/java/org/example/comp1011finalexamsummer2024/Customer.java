@@ -87,8 +87,15 @@ public class Customer {
     }
     // 4.3 Method to check if the customer saved $5 or more on all their purchases
     public boolean hasSavedFiveDollarsOrMoreOnAll() {
-        return purchasedProducts.stream()
-                .allMatch(product -> (product.getRegularPrice() - product.getSalePrice()) >= 5.0);
+        double totalSalePrice = 0.0;
+
+        for (Product product : this.getPurchasedProducts()) {
+            totalRegularPrice += product.getRegularPrice();
+            totalSalePrice += product.getSalePrice();
+        }
+
+        double totalSavings = totalRegularPrice - totalSalePrice;
+        return totalSavings >= 5.00;
     }
 
 }
