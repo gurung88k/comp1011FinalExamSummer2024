@@ -12,6 +12,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class TableViewController {
     @FXML
     private Label saleLabel;
@@ -75,7 +79,6 @@ public class TableViewController {
     private Label rowsInTableLabel;  // Label to show rows in table
 
     private ObservableList<Customer> allCustomers;  // Store all customers
-
     @FXML
     public void initialize() {
         // Set up the columns with the corresponding getter methods from Customer class
@@ -93,19 +96,32 @@ public class TableViewController {
         updateRowCountLabel(allCustomers.size());
     }
 
-    // Method to load all customers into the TableView
+    // Method to load the top 10 customers who have spent the most money (salePrice)
     @FXML
-    public void loadAllCustomers() {
+    public void top10Customers() {
         try {
-            // Set the full list of customers back into the tableView
-            tableView.setItems(allCustomers);
+            // Sort customers based on total purchases (sale price) in descending order and get the top 10
+            List<Customer> top10Customers = allCustomers.stream()
+                    .sorted(Comparator.comparingDouble(this::calculateTotalPurchases).reversed())
+                    .limit(10)
+                    .collect(Collectors.toList());
 
-            // Update the row count label to reflect all customers
-            updateRowCountLabel(allCustomers.size());
+            // Update the tableView with the top 10 customers
+            tableView.setItems(FXCollections.observableArrayList(top10Customers));
+
+            // Update the row count label
+            updateRowCountLabel(top10Customers.size());
 
         } catch (Exception e) {
             e.printStackTrace();  // Ensure no exceptions are triggered
         }
+    }
+
+    // Helper method to calculate the total purchases (salePrice) for a customer
+    private double calculateTotalPurchases(Customer customer) {
+        return customer.getPurchasedProducts().stream()
+                .mapToDouble(Product::getSalePrice)
+                .sum();
     }
 
     // Method to update the rowsInTableLabel
