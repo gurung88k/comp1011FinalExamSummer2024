@@ -52,6 +52,7 @@ public class TableViewController {
 
     @FXML
     private ImageView imageView;
+    
 
     @FXML
     private void top10Customers()
